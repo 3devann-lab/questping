@@ -143,6 +143,8 @@ input, select {
   color: var(--ink);
 }
 input:focus-visible, select:focus-visible { outline: 3px solid var(--iris); outline-offset: 1px; border-color: transparent; }
+.check { flex-direction: row; align-items: center; gap: 0.6rem; min-width: 0; font-weight: 400; }
+.check input { width: 1.2rem; height: 1.2rem; accent-color: var(--iris); }
 .row { display: flex; flex-wrap: wrap; gap: 1rem; }
 .row.buttons { gap: 0.6rem; }
 
