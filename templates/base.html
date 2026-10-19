@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}QuestPing{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="{{ url_for('home') }}">QuestPing</a>
+  <nav>
+    <a href="{{ url_for('setup') }}">Host it yourself</a>
+    {% if user %}
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <form method="post" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf" value="{{ user.csrf }}">
+      <button class="btn ghost">Log out</button>
+    </form>
+    {% else %}
+    <a class="btn" href="{{ url_for('login') }}">Log in with Discord</a>
+    {% endif %}
+  </nav>
+</header>
+<main>
+{% block body %}{% endblock %}
+</main>
+</body>
+</html>
