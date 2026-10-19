@@ -2,8 +2,7 @@
 
 A Discord bot and web dashboard that tells your server when a Meta Quest game gets a new build. Log in with Discord, pick a server, paste a store link, choose a channel and an optional role to ping.
 
-QuestPing reads the public Meta store page in a headless browser. Meta has no public API for other people's games, so this is unofficial. If Meta changes the page, the reader in `store.py` may need a tweak, and a failed check shows up on the dashboard under the game. The store page does not expose developer builds, so QuestPing only reports public releases.
-
+QuestPing reads the public Meta store page in a headless browser. Meta has no public API for other people's games, so this is unofficial. If Meta changes the page, the reader in `store.py` may need a tweak, and a failed check shows up on the dashboard under the game. 
 ## What you get
 
 - Discord login, no passwords stored
