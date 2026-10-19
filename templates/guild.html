@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ guild.name }} - QuestPing{% endblock %}
+{% block body %}
+<section class="page">
+  <a class="back" href="{{ url_for('dashboard') }}">All servers</a>
+  <h1>{{ guild.name }}</h1>
+  {% if notice %}<p class="notice">{{ notice }}</p>{% endif %}
+
+  <form class="panel" method="post" action="{{ url_for('add_tracker', gid=guild.id) }}">
+    <h2>Track a game</h2>
+    <input type="hidden" name="csrf" value="{{ user.csrf }}">
+    <label>Store link or app ID
+      <input name="game" required maxlength="300" placeholder="https://www.meta.com/experiences/.../1234567890123456/">
+    </label>
+    <div class="row">
+      <label>Channel
+        <select name="channel" required>
+          {% for c in channels %}<option value="{{ c.id }}">#{{ c.name }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Ping role
+        <select name="role">
+          <option value="">No ping</option>
+          {% for r in roles %}<option value="{{ r.id }}">@{{ r.name }}</option>{% endfor %}
+        </select>
+      </label>
+    </div>
+    <button class="btn">Start tracking</button>
+  </form>
+
+  <h2>Tracked games</h2>
+  {% for t in trackers %}
+  <form class="tracker" method="post" action="{{ url_for('update_tracker', gid=guild.id, tid=t.id) }}">
+    <input type="hidden" name="csrf" value="{{ user.csrf }}">
+    <div class="head">
+      <strong>{{ t.name or ('App ' ~ t.app_id) }}</strong>
+      <span class="ver">{{ t.version or 'waiting for the first check' }}</span>
+    </div>
+    {% if t.error %}<p class="err">Last check failed: {{ t.error }}</p>{% endif %}
+    <div class="row">
+      <label>Channel
+        <select name="channel" required>
+          {% for c in channels %}<option value="{{ c.id }}"{% if c.id|string == t.channel_id %} selected{% endif %}>#{{ c.name }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Ping role
+        <select name="role">
+          <option value="">No ping</option>
+          {% for r in roles %}<option value="{{ r.id }}"{% if r.id|string == t.role_id %} selected{% endif %}>@{{ r.name }}</option>{% endfor %}
+        </select>
+      </label>
+    </div>
+    <div class="row buttons">
+      <button class="btn">Save changes</button>
+      <button class="btn ghost danger" formaction="{{ url_for('delete_tracker', gid=guild.id, tid=t.id) }}" formnovalidate>Remove game</button>
+    </div>
+  </form>
+  {% else %}
+  <p class="empty">Nothing tracked yet. Paste a store link above to start.</p>
+  {% endfor %}
+</section>
+{% endblock %}
