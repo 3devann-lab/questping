@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Host it yourself - QuestPing{% endblock %}
+{% block body %}
+<section class="page">
+  <h1>Host QuestPing yourself</h1>
+  <p class="lede">QuestPing is open source. This is what your own copy needs from the Discord Developer Portal.</p>
+  <ol class="steps">
+    <li><strong>Create an application.</strong> Open the Developer Portal, choose New Application, then copy the Application ID and the Client Secret from the OAuth2 page.</li>
+    <li><strong>Add the redirect.</strong> On the OAuth2 page, add this redirect exactly: <code>{{ redirect_uri }}</code></li>
+    <li><strong>Create the bot.</strong> On the Bot page, reset and copy the token. It goes in the <code>DISCORD_TOKEN</code> variable on your host and never into this site. Leave every privileged intent off.</li>
+    <li><strong>Invite the bot.</strong> <a href="{{ invite }}">Use this link</a> to add it to a server, or use Add to server on the dashboard.</li>
+    <li><strong>Log in.</strong> The dashboard lists every server where you have Manage Server and shows which ones already have the bot.</li>
+  </ol>
+</section>
+{% endblock %}
