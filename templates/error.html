@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} - QuestPing{% endblock %}
+{% block body %}
+<section class="page">
+  <h1>{{ code }}</h1>
+  <p class="lede">{{ text }}</p>
+  <a class="btn" href="{{ url_for('home') }}">Back to start</a>
+</section>
+{% endblock %}
