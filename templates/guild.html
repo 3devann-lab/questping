@@ -9,9 +9,14 @@
   <form class="panel" method="post" action="{{ url_for('add_tracker', gid=guild.id) }}">
     <h2>Track a game</h2>
     <input type="hidden" name="csrf" value="{{ user.csrf }}">
-    <label>Store link or app ID
-      <input name="game" required maxlength="300" placeholder="https://www.meta.com/experiences/.../1234567890123456/">
-    </label>
+    <div class="row">
+      <label>Store link or app ID
+        <input name="game" required maxlength="300" placeholder="https://www.meta.com/experiences/.../1234567890123456/">
+      </label>
+      <label>Game name
+        <input name="name" maxlength="60" placeholder="Orbit Rally">
+      </label>
+    </div>
     <div class="row">
       <label>Channel
         <select name="channel" required>
@@ -25,6 +30,7 @@
         </select>
       </label>
     </div>
+    <label class="check"><input type="checkbox" name="dev"> Include developer builds</label>
     <button class="btn">Start tracking</button>
   </form>
 
@@ -34,9 +40,14 @@
     <input type="hidden" name="csrf" value="{{ user.csrf }}">
     <div class="head">
       <strong>{{ t.name or ('App ' ~ t.app_id) }}</strong>
-      <span class="ver">{{ t.version or 'waiting for the first check' }}</span>
+      <span class="ver">{{ t.version or 'waiting for the first check' }}{% if t.dev %}, newest developer build {{ t.dev }}{% endif %}</span>
     </div>
     {% if t.error %}<p class="err">Last check failed: {{ t.error }}</p>{% endif %}
+    <div class="row">
+      <label>Game name
+        <input name="name" maxlength="60" value="{{ t.name or '' }}" placeholder="Orbit Rally">
+      </label>
+    </div>
     <div class="row">
       <label>Channel
         <select name="channel" required>
@@ -50,6 +61,7 @@
         </select>
       </label>
     </div>
+    <label class="check"><input type="checkbox" name="dev"{% if t.dev_builds %} checked{% endif %}> Include developer builds</label>
     <div class="row buttons">
       <button class="btn">Save changes</button>
       <button class="btn ghost danger" formaction="{{ url_for('delete_tracker', gid=guild.id, tid=t.id) }}" formnovalidate>Remove game</button>
