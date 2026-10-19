@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Servers - QuestPing{% endblock %}
+{% block body %}
+<section class="page">
+  <h1>Your servers</h1>
+  <p class="lede">These are the servers where you can manage settings. Add QuestPing to the ones that are not set up yet.</p>
+  {% if guilds %}
+  <ul class="servers">
+    {% for s in guilds %}
+    <li>
+      {% if s.icon %}
+      <img src="https://cdn.discordapp.com/icons/{{ s.id }}/{{ s.icon }}.png?size=64" alt="" width="44" height="44">
+      {% else %}
+      <span class="initial">{{ s.name[:1] }}</span>
+      {% endif %}
+      <div class="info">
+        <strong>{{ s.name }}</strong>
+        <span>{% if s.installed %}{{ s.trackers }} {{ 'game' if s.trackers == 1 else 'games' }} tracked{% else %}QuestPing is not in this server{% endif %}</span>
+      </div>
+      {% if s.installed %}
+      <a class="btn" href="{{ url_for('guild_page', gid=s.id) }}">Manage</a>
+      {% else %}
+      <a class="btn ghost" href="{{ s.invite }}">Add to server</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="empty">No servers found. You need the Manage Server permission in a server to set it up.</p>
+  {% endif %}
+</section>
+{% endblock %}
