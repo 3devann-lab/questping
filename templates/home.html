@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block body %}
+<section class="hero">
+  <div class="hero-copy">
+    <h1>Your Discord hears about Quest updates first.</h1>
+    <p>Paste a Meta store link, choose a channel and a role, and QuestPing posts the moment a new build shows up.</p>
+    <div class="actions">
+      {% if user %}
+      <a class="btn" href="{{ url_for('dashboard') }}">Open dashboard</a>
+      {% else %}
+      <a class="btn" href="{{ url_for('login') }}">Log in with Discord</a>
+      {% endif %}
+      <a class="btn ghost" href="{{ url_for('setup') }}">Host it yourself</a>
+    </div>
+  </div>
+  <div class="ping" aria-hidden="true">
+    <span class="ping-role">@Quest players</span>
+    <div class="embed">
+      <strong>Orbit Rally has a new build</strong>
+      <dl>
+        <div><dt>Previous</dt><dd>2.4.0</dd></div>
+        <div><dt>Now</dt><dd>2.5.0</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+{% endblock %}
