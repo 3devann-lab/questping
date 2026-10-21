@@ -29,6 +29,7 @@ Your running copy also shows these steps at `/setup`.
 | `DISCORD_TOKEN` | the bot token |
 | `DISCORD_CLIENT_ID` | the Application ID |
 | `DISCORD_CLIENT_SECRET` | the Client Secret |
+| `META_ACCESS_TOKEN` | the Meta access token used to read store build data (the app will not start without it) |
 | `BASE_URL` | your public URL, for example `https://questping.up.railway.app` |
 | `DATA_DIR` | `/data` |
 | `CHECK_MINUTES` | optional, minimum 5, default 15 |
