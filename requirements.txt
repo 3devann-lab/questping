@@ -3,4 +3,4 @@ hypercorn==0.17.3
 discord.py==2.4.0
 httpx==0.27.2
 aiosqlite==0.20.0
-audioop-lts
+audioop-lts; python_version >= "3.13"
