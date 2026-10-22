@@ -89,7 +89,7 @@ def read_builds(data):
     binaries = find(data, "primary_binaries")
     nodes = binaries.get("nodes") if isinstance(binaries, dict) else None
     if not nodes:
-        raise StoreError("no builds in the reply, check the token and the app ID")
+        raise StoreError("no builds in the reply, check the app ID")
     builds = []
     for node in nodes:
         if not isinstance(node, dict):
@@ -111,17 +111,20 @@ def read_builds(data):
 
 
 class Store:
-    def __init__(self, token):
-        self.token = token
+    def __init__(self, token=None):
+        # The token is optional. Meta's public store endpoint answers for any
+        # app ID without an account, so it is only sent when one is configured.
+        self.token = token or None
         self.http = httpx.AsyncClient(timeout=30)
         self.gate = asyncio.Semaphore(3)
 
     async def fetch(self, app_id):
         params = {
-            "access_token": self.token,
             "doc_id": HISTORY_DOC,
             "variables": json.dumps({"applicationID": app_id}),
         }
+        if self.token:
+            params["access_token"] = self.token
         async with self.gate:
             try:
                 reply = await self.http.get(GRAPH, params=params)

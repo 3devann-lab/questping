@@ -33,7 +33,7 @@ def need(name):
 BOT_TOKEN = need("DISCORD_TOKEN")
 CLIENT_ID = need("DISCORD_CLIENT_ID")
 CLIENT_SECRET = need("DISCORD_CLIENT_SECRET")
-META_TOKEN = need("META_ACCESS_TOKEN")
+META_TOKEN = os.environ.get("META_ACCESS_TOKEN", "").strip() or None
 BASE_URL = need("BASE_URL").rstrip("/")
 DATA_DIR = os.environ.get("DATA_DIR", "data")
 INTERVAL = max(5, int(os.environ.get("CHECK_MINUTES", "30")))
