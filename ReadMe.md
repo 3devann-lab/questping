@@ -2,7 +2,7 @@
 
 A Discord bot and web dashboard that tells your server when a Meta Quest game gets a new build. Log in with Discord, pick a server, paste a store link, choose a channel and an optional role to ping.
 
-QuestPing reads the public Meta store page in a headless browser. Meta has no public API for other people's games, so this is unofficial. If Meta changes the page, the reader in `store.py` may need a tweak, and a failed check shows up on the dashboard under the game. 
+QuestPing asks Meta's public store API for the build history of any app, not just your own, and posts when a new live build or developer build appears. No Meta account or token is needed. The API is unofficial, so if Meta changes it, the reader in `store.py` may need a tweak, and a failed check shows up on the dashboard under the game.
 ## What you get
 
 - Discord login, no passwords stored
@@ -29,7 +29,7 @@ Your running copy also shows these steps at `/setup`.
 | `DISCORD_TOKEN` | the bot token |
 | `DISCORD_CLIENT_ID` | the Application ID |
 | `DISCORD_CLIENT_SECRET` | the Client Secret |
-| `META_ACCESS_TOKEN` | the Meta access token used to read store build data (the app will not start without it) |
+| `META_ACCESS_TOKEN` | optional, only needed if Meta ever starts rejecting anonymous requests |
 | `BASE_URL` | your public URL, for example `https://questping.up.railway.app` |
 | `DATA_DIR` | `/data` |
 | `CHECK_MINUTES` | optional, minimum 5, default 15 |
