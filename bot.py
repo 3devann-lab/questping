@@ -99,7 +99,7 @@ class QuestBot(discord.Client):
         name = tracker["name"] or "App " + tracker["app_id"]
         embed = discord.Embed(
             title=name[:150] + (" has a new developer build" if is_dev else " has a new build"),
-            url="https://www.meta.com/experiences/view/" + tracker["app_id"] + "/",
+            url="https://www.meta.com/experiences/" + tracker["app_id"] + "/",
             colour=ACCENT,
         )
         if old and old != "-":

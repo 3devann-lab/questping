@@ -8,6 +8,9 @@ import httpx
 
 GRAPH = "https://graph.oculus.com/graphql"
 HISTORY_DOC = "2885322071572384"
+# The app token Meta's own web store uses. It is public and works for any app,
+# and the API rejects requests that carry no token at all.
+PUBLIC_TOKEN = "OC|1317831034909742|"
 HOSTS = {"meta.com", "www.meta.com", "oculus.com", "www.oculus.com"}
 
 
@@ -46,7 +49,8 @@ def parse_app_id(raw):
         return None
     if url.scheme not in ("http", "https") or url.hostname not in HOSTS:
         return None
-    if not url.path.startswith("/experiences/"):
+    # Store links may carry a locale first, as in /en-gb/experiences/...
+    if not re.match(r"(/[a-z]{2}(-[a-z]{2})?)?/experiences/", url.path, re.I):
         return None
     found = re.findall(r"/(\d{8,20})(?=/|$)", url.path)
     return found[-1] if found else None
@@ -82,10 +86,25 @@ def channel_names(node):
     return names
 
 
+def meta_error(data):
+    if not isinstance(data, dict):
+        return None
+    # Auth and request errors come back as {"error": {...}}, query errors as {"errors": [...]}.
+    error = data.get("error")
+    errors = data.get("errors")
+    if not isinstance(error, dict) and isinstance(errors, list) and errors:
+        error = errors[0]
+    if isinstance(error, dict):
+        return "Meta said: " + str(error.get("message") or "unknown error")[:80]
+    return None
+
+
 def read_builds(data):
-    errors = data.get("errors") if isinstance(data, dict) else None
-    if errors and isinstance(errors, list) and isinstance(errors[0], dict):
-        raise StoreError("Meta said: " + str(errors[0].get("message", "unknown error"))[:80])
+    problem = meta_error(data)
+    if problem:
+        raise StoreError(problem)
+    if not isinstance(data, dict) or not isinstance(data.get("data"), dict) or data["data"].get("node") is None:
+        raise StoreError("Meta has no app with that ID")
     binaries = find(data, "primary_binaries")
     nodes = binaries.get("nodes") if isinstance(binaries, dict) else None
     if not nodes:
@@ -112,30 +131,30 @@ def read_builds(data):
 
 class Store:
     def __init__(self, token=None):
-        # The token is optional. Meta's public store endpoint answers for any
-        # app ID without an account, so it is only sent when one is configured.
-        self.token = token or None
+        # A configured token is optional and replaces the public store token.
+        self.token = token or PUBLIC_TOKEN
         self.http = httpx.AsyncClient(timeout=30)
         self.gate = asyncio.Semaphore(3)
 
     async def fetch(self, app_id):
-        params = {
+        form = {
+            "access_token": self.token,
             "doc_id": HISTORY_DOC,
             "variables": json.dumps({"applicationID": app_id}),
         }
-        if self.token:
-            params["access_token"] = self.token
         async with self.gate:
             try:
-                reply = await self.http.get(GRAPH, params=params)
+                reply = await self.http.post(GRAPH, data=form, params={"forced_locale": "en_US"})
             except httpx.HTTPError:
                 raise StoreError("could not reach Meta") from None
-        if reply.status_code != 200:
-            raise StoreError("Meta answered with status %d" % reply.status_code)
         try:
             data = reply.json()
         except ValueError:
-            raise StoreError("Meta sent a reply that is not JSON") from None
+            data = None
+        if reply.status_code != 200:
+            raise StoreError(meta_error(data) or "Meta answered with status %d" % reply.status_code)
+        if data is None:
+            raise StoreError("Meta sent a reply that is not JSON")
         return read_builds(data)
 
     async def close(self):
