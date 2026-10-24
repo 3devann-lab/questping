@@ -36,7 +36,7 @@ CLIENT_SECRET = need("DISCORD_CLIENT_SECRET")
 META_TOKEN = os.environ.get("META_ACCESS_TOKEN", "").strip() or None
 BASE_URL = need("BASE_URL").rstrip("/")
 DATA_DIR = os.environ.get("DATA_DIR", "data")
-INTERVAL = max(5, int(os.environ.get("CHECK_MINUTES", "30")))
+INTERVAL = max(5, int(os.environ.get("CHECK_MINUTES", "15")))
 
 SECURE = BASE_URL.startswith("https://")
 ORIGIN = "{0.scheme}://{0.netloc}".format(urlparse(BASE_URL))
