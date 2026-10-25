@@ -220,7 +220,9 @@ async def harden(resp):
     )
     resp.headers["X-Content-Type-Options"] = "nosniff"
     resp.headers["X-Frame-Options"] = "DENY"
-    resp.headers["Referrer-Policy"] = "no-referrer"
+    # Not "no-referrer": under that policy browsers send "Origin: null" on form
+    # posts, even same-site ones, and the origin check in auth() rejects them.
+    resp.headers["Referrer-Policy"] = "same-origin"
     if SECURE:
         resp.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     if not request.path.startswith("/static"):
